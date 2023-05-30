@@ -17,7 +17,7 @@ const Products = {
          .search()
          .sorting()
          .filtering()
-         .pagination(100)
+         .paginating(100)
       const products = await apiFeature.query
       const uniquePublisher = await General.distinct( "publisher" )
       const uniqueAuthor = await General.distinct( "author.name" )
