@@ -17,10 +17,8 @@ const Products = {
          .search()
          .sorting()
          .filtering()
-         .paginating(100)
+         .paginating( 100 )
       const products = await apiFeature.query
-      const uniquePublisher = await General.distinct( "publisher" )
-      const uniqueAuthor = await General.distinct( "author.name" )
 
       if ( products.length === 0 ) {
          res.status( 200 ).json( { products: [], msg: "Empty Items list" } )
@@ -29,9 +27,9 @@ const Products = {
             res.status( 200 ).send( myCache.get( "GeneralCtrl" ) )
          } else {
             myCache.set( "GeneralCtrl", {
-                uniquePublisher, uniqueAuthor, products
+               products
             } )
-            res.status( 200 ).send( { uniquePublisher, uniqueAuthor, products } )
+            res.status( 200 ).send( { products } )
          }
       }
    } ),
