@@ -31,6 +31,7 @@ app.use(
       level: 6,
    } )
 )
+app.get( '/', ( req, res ) => res.send( "Hello, I am Abdur Rakib Rony. Enjoy free books api." ) )
 
 app.use( "/api/search", require( "./routes/search" ) )
 app.use( "/api/todays-deal", require( "./routes/todays-deal" ) )
