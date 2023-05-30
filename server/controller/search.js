@@ -15,63 +15,25 @@ const myCache = new NodeCache( {
 const SearchCtrl = {
    getOne: AsyncErrorHandler( async ( req, res, next ) => {
       let books = await Books.findById( req.params.id ).lean()
-      let academic = await Academic.findById( req.params.id ).lean()
-      let office_supplies = await OfficeSupplies.findById( req.params.id ).lean()
-      let stationaries = await Stationary.findById( req.params.id ).lean()
 
-      res.status( 200 ).send( {
-         books,
-         academic,
-         office_supplies,
-         stationaries
-      } )
+      res.status( 200 ).send( books )
    } ),
+
    search: AsyncErrorHandler( async ( req, res, next ) => {
       try {
-         if ( myCache.has( "searchproducts" ) ) {
-            res.status( 200 ).send( myCache.get( "searchproducts" ) )
+         if ( myCache.has( "books" ) ) {
+            res.status( 200 ).send( myCache.get( "books" ) )
          } else {
-            let stationaries = await Stationary.find( {
-               "$or": [
-                  { title: { $regex: req.params.key, $options: "i" } },
-               ]
-            } )
+
+            let books = await Books.find(
+               { title: req.params.key }
+            )
                .select( {
                   title: 1,
                } )
                .lean()
-            let office_supplies = await OfficeSupplies.find( {
-               "$or": [
-                  { title: { $regex: req.params.key, $options: "i" } },
-               ]
-            } )
-               .select( {
-                  title: 1,
-               } )
-               .lean()
-            let books = await Books.find( {
-               "$or": [
-                  { title: { $regex: req.params.key, $options: "i" } },
-               ]
-            } )
-               .select( {
-                  title: 1,
-               } )
-               .lean()
-            let academic = await Academic.find( {
-               "$or": [
-                  { title: { $regex: req.params.key, $options: "i" } },
-               ]
-            } )
-               .select( {
-                  title: 1,
-               } )
-               .lean()
-            let result = [...books,
-            ...academic,
-            ...stationaries, ...office_supplies]
-            myCache.set( "searchproducts", result )
-            res.status( 200 ).send( result )
+            myCache.set( "books", books )
+            res.status( 200 ).send( books )
          }
       } catch ( err ) {
          console.log( "Caught error", err )
